@@ -7,12 +7,13 @@ import Table from "../../ui/Table";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 import Menus from "../../ui/Menus";
-import { HiArrowDownOnSquare, HiEye, HiTrash } from "react-icons/hi2";
+import { HiArrowDownOnSquare, HiEye, HiPencil, HiTrash } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../check-in-out/useCheckout";
 import { useDeleteBooking } from "../check-in-out/useDeleteBooking";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import NewBookingForm from "./NewBookingForm";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -65,6 +66,7 @@ function BookingRow({
   };
 
   return (
+    <>
     <Table.Row>
       <Cabin>{cabinName}</Cabin>
 
@@ -119,6 +121,7 @@ function BookingRow({
       </Modal.Window>
       </Modal>
     </Table.Row>
+    </>
   );
 }
 

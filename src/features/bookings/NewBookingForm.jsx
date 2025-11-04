@@ -13,7 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSettings } from '../settings/useSettings';
 import toast from 'react-hot-toast';
 import { useGuests } from '../../hooks/useGuests';
-import { useNewBooking } from './useNewBooking';
+import { useCreateBooking } from './useCreateBooking';
+
 const StyledSelect = styled.select`
   border: 1px solid var(--color-grey-300);
   background-color: var(--color-grey-0);
@@ -22,19 +23,20 @@ const StyledSelect = styled.select`
   box-shadow: var(--shadow-sm);
 `;
  
-function NewBookingForm() {
+function NewBookingForm({onCloseModal}) {
   const [wantsBreakfast, setWantsBreakfast] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const { cabins, isLoading } = useCabins();
   const { guests, isLoading: isLoadingGuests } = useGuests();
   const { settings, isLoading: isLoadingSettings } = useSettings();
-  const { createBooking, isLoading: isCreating } = useNewBooking();
+  const { createBooking, isLoading: isCreating } = useCreateBooking();
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
+    reset
   } = useForm();
  
   if (isLoading || isLoadingSettings || isLoadingGuests) return <Spinner />;
@@ -96,6 +98,8 @@ function NewBookingForm() {
     createBooking(finalData, {
       onSuccess : (data) => {
         navigate(`/bookings`)
+          reset();
+          onCloseModal?.();
       }
     });
   }
@@ -201,7 +205,7 @@ function NewBookingForm() {
         <Button type="submit" variation="primary" disabled={isCreating}>
           Submit
         </Button>
-        <Button type="cancel" variation="secondary" disabled={isCreating}>
+        <Button onClick={() => onCloseModal?.()} type="reset" variation="secondary" disabled={isCreating}>
           Cancel
         </Button>
       </FormRow>
@@ -210,68 +214,7 @@ function NewBookingForm() {
 }
  
 export default NewBookingForm;
+ 
 
-
-
-@Nicholas
-//createBooking API
-export async function createBooking(newBooking) {
-  const { data, error } = await supabase
-    .from("bookings")
-    .insert([{...newBooking}])
-    .select();
- 
-  if (error) throw new Error(error.message);
- 
-  return data;
-}
- 
- 
-//useCreateBooking.jsx
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBooking as createBookingAPI } from "../../services/apiBookings";
-import toast from "react-hot-toast";
- 
-export function useCreateBooking() {
-  const queryClient = useQueryClient();
-  const { isLoading, mutate: createBooking } = useMutation({
-    mutationFn: createBookingAPI,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookings"] });
-      toast.success("New booking succesfully created");
-    },
-    onError: (err) => {
-      console.log("ERROR", err);
-      toast.error(err.message);
-    },
-  });
- 
-  return { isLoading, createBooking };
-}
- 
- 
-//Also you will need the getGuests api from supabase to link to the booking
-//getGuests
- 
-export async function getGuests() {
-  const { data, error} = await supabase.from("guests").select("*");
- 
-  if (error) throw new Error(error.message);
- 
-  return data;
-}
- 
-//useGuests
-import { useQuery } from "@tanstack/react-query";
-import { getGuests } from "../services/apiUsers";
- 
-export function useGuests() {
-  const { isLoading, data: guests = {} } = useQuery({
-    queryKey: ["guests"],
-    queryFn: getGuests,
-  });
- 
-  return { isLoading, guests };
-}
 
 // https://cheffest.netlify.app/
