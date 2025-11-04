@@ -96,7 +96,7 @@ function NewBookingForm({onCloseModal}) {
       endDate: new Date(data.endDate).toISOString(),
     };
     createBooking(finalData, {
-      onSuccess : (data) => {
+      onSuccess : () => {
         navigate(`/bookings`)
           reset();
           onCloseModal?.();
