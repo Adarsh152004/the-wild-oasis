@@ -9,7 +9,7 @@ This project demonstrates modern React architecture — authentication, CRUD ope
 
 ## 🌍 Live Demo
 
-🔗 **Website:** [adarsh-wild-oasis.netlify.app](https://adarsh-wild-oasis.netlify.app)
+🔗 **Website:** [adarsh-wildoasis.netlify.app](https://adarsh-wildoasis.netlify.app/)
 💻 **GitHub Repo:** [github.com/Adarsh152004/the-wild-oasis](https://github.com/Adarsh152004/the-wild-oasis)
 
 ---
